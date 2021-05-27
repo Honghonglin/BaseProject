@@ -1,7 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum ControlKey
+{
+    LeftKey,
+    RightKey
+}
 /// <summary>
 /// 1.Input类
 /// 2.事件中心模块
@@ -10,7 +14,12 @@ using UnityEngine;
 public class InputMgr : BaseManager<InputMgr>
 {
 
-    private bool isStart = false;
+    private bool isStart = true;
+    //private float lastkeydown = 0f;
+    public KeyCode LeftKey = KeyCode.LeftArrow;
+    public KeyCode RightKey = KeyCode.RightArrow;
+    public KeyCode KickKey = KeyCode.Space;
+    public KeyCode GrabKey = KeyCode.Z;
     /// <summary>
     /// 构造函数中 添加Updata监听
     /// </summary>
@@ -39,18 +48,40 @@ public class InputMgr : BaseManager<InputMgr>
         //事件中心模块 分发按下抬起事件
         if (Input.GetKeyUp(key))
             EventCenter.GetInstance().EventTrigger("某键抬起", key);
+        if (Input.GetKey(key))
+            EventCenter.GetInstance().EventTrigger("某键按着", key);
     }
 
     private void MyUpdate()
     {
+
         //没有开启输入检测 就不去检测 直接return
         if (!isStart)
             return;
-
-        CheckKeyCode(KeyCode.W);
-        CheckKeyCode(KeyCode.S);
-        CheckKeyCode(KeyCode.A);
-        CheckKeyCode(KeyCode.D);
+        CheckKeyCode(LeftKey);
+        CheckKeyCode(RightKey);
+        CheckKeyCode(KickKey);
+        CheckKeyCode(GrabKey);
     }
-	
+
+    /// <summary>
+    /// 改键
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="keyCode"></param>
+    public void ChangeKey(ControlKey key, KeyCode keyCode)
+    {
+        switch (key)
+        {
+            case ControlKey.LeftKey:
+                LeftKey = keyCode;
+                break;
+            case ControlKey.RightKey:
+                RightKey = keyCode;
+                break;
+            default:
+                break;
+        }
+    }
+
 }
